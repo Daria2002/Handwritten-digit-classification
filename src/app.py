@@ -1,16 +1,26 @@
-from flask import Flask
 import os
-import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow as tf
+import tensorflow as tfjs
+from tensorflow import keras
 
-app = Flask(__name__)
+def load_mnist_dataset():
+    # split the minst dataset into train and test datasets
+    (train_img, train_label), (test_img, test_label) = keras.datasets.mnist.load_data()
+    # reshape the input vector to a 4-dims numpy arrays and normalize the input by dividing the RGB codes to 255
+    train_img = train_img.reshape([-1, 28, 28, 1])
+    test_img = test_img.reshape([-1, 28, 28, 1])
+    train_img = train_img/255.0
+    test_img = test_img/255.0
+    # convert class vectors to binary class matrices using one-hot encoding
+    train_label = keras.utils.to_categorical(train_label)
+    test_label = keras.utils.to_categorical(test_label)
 
-@app.route("/")
-def hello():
-    return "Hello World"
+def define_the_cnn_model():
+    return ""
 
+def train_and_save_the_model():
+    load_mnist_dataset()
+    define_the_cnn_model()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True,host='0.0.0.0',port=port)
+    train_and_save_the_model()
