@@ -1,6 +1,6 @@
 import os
 import tensorflow as tf
-import tensorflow as tfjs
+import tensorflowjs as tfjs
 from tensorflow import keras
 
 def load_mnist_dataset():
@@ -14,6 +14,7 @@ def load_mnist_dataset():
     # convert class vectors to binary class matrices using one-hot encoding
     train_label = keras.utils.to_categorical(train_label)
     test_label = keras.utils.to_categorical(test_label)
+    return (train_img, train_label, test_img, test_label)
 
 def define_the_cnn_model():
     model = keras.Sequential([
@@ -27,10 +28,20 @@ def define_the_cnn_model():
         keras.layers.Dense(10, activation='softmax')
     ])
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+def train_the_model(model, train_img, train_label, test_img, test_label):
+    model.fit(train_img, train_label, validation_data=(test_img, test_label), epochs=10)
+    test_loss, test_acc = model.evaluate(test_img, test_label)
+    print('Test accuracy:', test_acc)
 
 def train_and_save_the_model():
-    load_mnist_dataset()
-    define_the_cnn_model()
+    train_img, train_label, test_img, test_label = load_mnist_dataset()
+    model = define_the_cnn_model()
+    train_the_model(model, train_img, train_label, test_img, test_label)
+    # save model as tfjs format
+    tfjs.converters.save_keras_model(model, 'models')
 
 if __name__ == "__main__":
     train_and_save_the_model()
+
