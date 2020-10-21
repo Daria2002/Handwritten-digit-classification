@@ -1,6 +1,5 @@
 import os
 import tensorflow as tf
-import tensorflowjs as tfjs
 from tensorflow import keras
 
 def load_mnist_dataset():
@@ -31,7 +30,7 @@ def define_the_cnn_model():
     return model
 
 def train_the_model(model, train_img, train_label, test_img, test_label):
-    model.fit(train_img, train_label, validation_data=(test_img, test_label), epochs=10)
+    model.fit(train_img, train_label, validation_data=(test_img, test_label), epochs=1) # epochs = 10
     test_loss, test_acc = model.evaluate(test_img, test_label)
     print('Test accuracy:', test_acc)
 
@@ -40,7 +39,7 @@ def train_and_save_the_model():
     model = define_the_cnn_model()
     train_the_model(model, train_img, train_label, test_img, test_label)
     # save model as tfjs format
-    tfjs.converters.save_keras_model(model, 'models')
+    model.save('./models/saved_model.bin')
 
 if __name__ == "__main__":
     train_and_save_the_model()
