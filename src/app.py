@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow import keras
 
 def load_mnist_dataset():
-    # split the minst dataset into train and test datasets
+    # load mnist dataset and split it into train and test datasets
     (train_img, train_label), (test_img, test_label) = keras.datasets.mnist.load_data()
     # reshape the input vector to a 4-dims numpy arrays and normalize the input by dividing the RGB codes to 255
     train_img = train_img.reshape([-1, 28, 28, 1])
@@ -29,18 +29,22 @@ def define_the_cnn_model():
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-def train_the_model(model, train_img, train_label, test_img, test_label):
-    model.fit(train_img, train_label, validation_data=(test_img, test_label), epochs=1) # epochs = 10
+def train_the_model(model, train_img, train_label):
+    print('Train')
+    model.fit(train_img, train_label, epochs=1) # epochs = 10
+
+def train_and_save_the_model(train_img, train_label):
+    model = define_the_cnn_model()
+    train_the_model(model, train_img, train_label)
+    model.save('./model/model.h5')
+    return model
+
+def test_the_model(model, test_img, test_label):
+    print('Test')
     test_loss, test_acc = model.evaluate(test_img, test_label)
     print('Test accuracy:', test_acc)
 
-def train_and_save_the_model():
-    train_img, train_label, test_img, test_label = load_mnist_dataset()
-    model = define_the_cnn_model()
-    train_the_model(model, train_img, train_label, test_img, test_label)
-    # save model as tfjs format
-    model.save('./models/saved_model.bin')
-
 if __name__ == "__main__":
-    train_and_save_the_model()
-
+    train_img, train_label, test_img, test_label = load_mnist_dataset()
+    model = train_and_save_the_model(train_img, train_label)
+    test_the_model(model, test_img, test_label)
